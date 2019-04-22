@@ -10,4 +10,7 @@ out/
 .project
 .settings
 .classpath
-devDB.mv.db
+devDb.mv.db
+devDb.trace.db
+prodDb.mv.db
+prodDb.trace.db
