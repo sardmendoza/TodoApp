@@ -1,6 +1,8 @@
 package todoapp
 
 import grails.validation.ValidationException
+import groovy.transform.CompileStatic
+
 import static org.springframework.http.HttpStatus.*
 
 class TaskController {
@@ -38,7 +40,8 @@ class TaskController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.created.message', args: [message(default: 'Task'), task.id])
-                redirect task
+                redirect(action: 'show', params: [id: task.id] )
+//                redirect task
             }
             '*' { respond task, [status: CREATED] }
         }
