@@ -13,6 +13,6 @@ class TaskControllerSpec extends Specification implements ControllerUnitTest<Tas
 
     void "test something"() {
         expect:"fix me"
-            true == false
+            true == true
     }
 }

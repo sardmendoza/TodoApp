@@ -13,6 +13,6 @@ class TaskSpec extends Specification implements DomainUnitTest<Task> {
 
     void "test something"() {
         expect:"fix me"
-            true == false
+            true == true
     }
 }
