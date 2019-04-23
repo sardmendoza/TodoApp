@@ -2,6 +2,7 @@ package todoapp
 
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
+import grails.validation.ValidationException
 import spock.lang.Specification
 import org.hibernate.SessionFactory
 
@@ -13,24 +14,43 @@ class TaskServiceSpec extends Specification {
     SessionFactory sessionFactory
 
     private Long setupData() {
-        // TODO: Populate valid domain instances and return a valid ID
-        //new Task(...).save(flush: true, failOnError: true)
-        //new Task(...).save(flush: true, failOnError: true)
-        //Task task = new Task(...).save(flush: true, failOnError: true)
-        //new Task(...).save(flush: true, failOnError: true)
-        //new Task(...).save(flush: true, failOnError: true)
-        assert false, "TODO: Provide a setupData() implementation for this generated test suite"
-        //task.id
+        new Task(
+                title: "Test Task 1",
+                description: "Test Task 1 Description",
+                category: "Work Related",
+                completed: false)
+                .save(flush: true, failOnError: true)
+        new Task(
+                title: "Test Task 2",
+                description: "Test Task 2 Description",
+                category: "Leisure",
+                completed: false)
+                .save(flush: true, failOnError: true)
+        new Task(
+                title: "Test Task 3",
+                description: "Test Task 3 Description",
+                category: "Leisure",
+                completed: false)
+                .save(flush: true, failOnError: true)
+        Task task = new Task(
+                title: "Test Task 4",
+                description: "Test Task 4 Description",
+                category: "Leisure",
+                completed: false)
+                .save(flush: true, failOnError: true)
+        return task.id
     }
 
-    void "test get"() {
-        setupData()
+    void "should return a record"() {
+        setup:
+        Long taskId = setupData()
 
         expect:
-        taskService.get(1) != null
+        taskService.get(taskId) != null
     }
 
-    void "test list"() {
+    void "should have correct list"() {
+        setup:
         setupData()
 
         when:
@@ -38,37 +58,83 @@ class TaskServiceSpec extends Specification {
 
         then:
         taskList.size() == 2
-        assert false, "TODO: Verify the correct instances are returned"
+
+        expect:
+        taskList.get(0).title == "Test Task 3"
+        taskList.get(1).title == "Test Task 4"
     }
 
-    void "test count"() {
+    void "should have correct record count"() {
+        setup:
         setupData()
 
         expect:
-        taskService.count() == 5
+        taskService.count() == 4
     }
 
-    void "test delete"() {
+    void "should have one less record after delete"() {
+        setup:
         Long taskId = setupData()
 
         expect:
-        taskService.count() == 5
+        taskService.count() == 4
 
         when:
         taskService.delete(taskId)
         sessionFactory.currentSession.flush()
 
         then:
-        taskService.count() == 4
+        taskService.count() == 3
     }
 
-    void "test save"() {
+    void "should not be null after adding new task"() {
         when:
-        assert false, "TODO: Provide a valid instance to save"
-        Task task = new Task()
+        Task task = new Task(
+                title: "Test Task 4",
+                description: "Test Task 5 Description",
+                category: "Leisure",
+                completed: false)
         taskService.save(task)
 
         then:
         task.id != null
+    }
+
+    void "should throw ValidationException if category is invalid"() {
+        when:
+        Task task = new Task(
+                title: "Test Task 5",
+                description: "Test Task 5 Description",
+                category: "ASD",
+                completed: false)
+        taskService.save(task)
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "should throw ValidationException if title is not provided"() {
+        when:
+        Task task = new Task(
+                description: "Test Task Description",
+                category: "Leisure",
+                completed: false)
+        taskService.save(task)
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "should throw ValidationException if title characters is less than specified"() {
+        when:
+        Task task = new Task(
+                title: "A",
+                description: "Test Task Description",
+                category: "Leisure",
+                completed: false)
+        taskService.save(task)
+
+        then:
+        thrown(ValidationException)
     }
 }
