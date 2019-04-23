@@ -41,7 +41,7 @@ class TaskServiceSpec extends Specification {
         return task.id
     }
 
-    void "should return a record"() {
+    def 'should return a record'() {
         setup:
         Long taskId = setupData()
 
@@ -49,7 +49,7 @@ class TaskServiceSpec extends Specification {
         taskService.get(taskId) != null
     }
 
-    void "should have correct list"() {
+    def 'should have correct list'() {
         setup:
         setupData()
 
@@ -64,7 +64,7 @@ class TaskServiceSpec extends Specification {
         taskList.get(1).title == "Test Task 4"
     }
 
-    void "should have correct record count"() {
+    def 'should have correct record count'() {
         setup:
         setupData()
 
@@ -72,7 +72,7 @@ class TaskServiceSpec extends Specification {
         taskService.count() == 4
     }
 
-    void "should have one less record after delete"() {
+    def 'should have one less record after delete'() {
         setup:
         Long taskId = setupData()
 
@@ -87,7 +87,7 @@ class TaskServiceSpec extends Specification {
         taskService.count() == 3
     }
 
-    void "should not be null after adding new task"() {
+    def 'should not be null after adding new task'() {
         when:
         Task task = new Task(
                 title: "Test Task 4",
@@ -100,7 +100,7 @@ class TaskServiceSpec extends Specification {
         task.id != null
     }
 
-    void "should throw ValidationException if category is invalid"() {
+    def 'should throw ValidationException if category is invalid'() {
         when:
         Task task = new Task(
                 title: "Test Task 5",
@@ -113,7 +113,7 @@ class TaskServiceSpec extends Specification {
         thrown(ValidationException)
     }
 
-    void "should throw ValidationException if title is not provided"() {
+    def 'should throw ValidationException if title is not provided'() {
         when:
         Task task = new Task(
                 description: "Test Task Description",
@@ -125,7 +125,7 @@ class TaskServiceSpec extends Specification {
         thrown(ValidationException)
     }
 
-    void "should throw ValidationException if title characters is less than specified"() {
+    def 'should throw ValidationException if title characters is less than specified'() {
         when:
         Task task = new Task(
                 title: "A",
